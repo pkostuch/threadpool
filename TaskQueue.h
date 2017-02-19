@@ -62,7 +62,7 @@ public:
     }
 
     /*
-     *
+     * Mark this queue as inactive.
      */
     void close() {
         std::unique_lock<std::mutex> lock(_mutex);

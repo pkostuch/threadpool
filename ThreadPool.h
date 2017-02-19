@@ -17,9 +17,12 @@ public:
 
     using TaskQueueType = TaskQueue<T, Priorities>;
 
+    /*
+     * Create thread pool.
+     */
     ThreadPool(unsigned size = 1)
     {
-
+        /* worker's function */
         auto procedure = [this] () {
             for(;;) {
                 try {
@@ -28,7 +31,7 @@ public:
                     task();
                 }
                 catch (const typename TaskQueueType::Exception& e) {
-                    /* queue is close, terminate worker */
+                    /* queue is closed, terminate worker */
                     break;
                 }
                 catch (...) {
@@ -37,6 +40,7 @@ public:
             }
         };
 
+        /* create as many workers as required */
         for (auto i = 0u; i < size; ++i) {
             _workers.emplace_back(procedure);
         }
@@ -53,7 +57,7 @@ public:
 
     template <typename Task>
     void push(Task &&task, unsigned prio = 0) {
-        _queue.push(std::forward<Task>(task));
+        _queue.push(std::forward<Task>(task), prio);
     }
 
 private:
